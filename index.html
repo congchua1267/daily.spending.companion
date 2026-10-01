@@ -298,7 +298,7 @@
                 Sẵn sàng bắt đầu với dữ liệu của riêng bạn?
             </p>
 
-            <button onclick="navigateTab('overview')"
+            <button onclick="startUsingCompanion()"
                 class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition">
                 Bắt đầu sử dụng
             </button>
@@ -934,7 +934,7 @@ window.firebaseEmailLogin = async function(email, password) {
   window.handleGoogleLogin = async function () {
     try {
       await signInWithPopup(auth, provider);
-      closeAuthModal();
+      window.handleLoginSuccess();
     } catch (error) {
       console.error("Google login error:", error);
 
@@ -1010,8 +1010,28 @@ let state = window.state;
     function dismissBanner() {
       document.getElementById('top-gentle-banner').classList.add('hidden');
     }
+let pendingDestination = null;
 
+function startUsingCompanion() {
+    if (!state.user || !state.user.loggedIn) {
+
+        // Ghi nhớ rằng sau khi đăng nhập cần chuyển sang Tổng quan
+        pendingDestination = 'overview';
+
+        openAuthModal();
+        return;
+    }
+
+    navigateTab('overview');
+}
     function navigateTab(tabKey) {
+    // Companion được phép xem mà không cần đăng nhập
+    // Các tab còn lại yêu cầu đăng nhập
+    if (tabKey !== 'companion' && (!state.user || !state.user.loggedIn)) {
+        pendingDestination = tabKey;
+        openAuthModal();
+        return;
+    }  
       const tabs = ['companion', 'overview', 'ledger', 'mobility', 'monthly-review'];
       tabs.forEach(t => {
         const el = document.getElementById(`tab-${t}`);
@@ -1062,7 +1082,15 @@ window.renderAuthHeader = renderAuthHeader;
   modal.classList.remove('flex');
     }
 window.closeAuthModal = closeAuthModal;
+function handleLoginSuccess() {
+    closeAuthModal();
 
+    if (pendingDestination) {
+        navigateTab(pendingDestination);
+        pendingDestination = null;
+    }
+}
+  window.handleLoginSuccess = handleLoginSuccess;
     function toggleAuthMode() {
       isRegisterMode = !isRegisterMode;
       const title = document.getElementById('auth-modal-title');
@@ -1132,7 +1160,7 @@ window.closeAuthModal = closeAuthModal;
         return;
       }
 
-      closeAuthModal();
+      handleLoginSuccess();
 
       alert("Đăng nhập thành công!");
     }
