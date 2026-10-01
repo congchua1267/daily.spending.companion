@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Spending Companion — Nền tảng Tài chính Sinh viên Thông minh</title>
+  <!-- Google Fonts: Plus Jakarta Sans chuẩn giao diện Fintech hiện đại -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #fafafa;
+      color: #0f172a;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background-color: #fca5a5;
+      border-radius: 9999px;
+    }
+    @keyframes pulse-soft {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.03); }
+    }
+    .animate-mic {
+      animation: pulse-soft 1.2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-red-600 selection:text-white">
+
+  <!-- ================= 0. TOP UTILITY BAR (CAM ĐOAN & BẢO MẬT) ================= -->
+  <aside aria-label="Cam kết bảo mật" class="bg-stone-900 text-stone-300 text-[11px] py-1.5 px-6 border-b border-stone-800">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-1">
+      <div class="flex items-center space-x-3">
+        <span class="flex items-center text-red-400 font-semibold">
+          <i class="fa-solid fa-shield-halved mr-1 text-xs"></i> Chuẩn mã hóa cục bộ an toàn
+        </span>
+        <span class="text-stone-600 hidden sm:inline">•</span>
+        <span class="text-stone-400 hidden sm:inline">Cam đoan không thương mại hoá hoặc bán dữ liệu tài chính sinh viên</span>
+      </div>
+      <div class="flex items-center space-x-4 text-stone-400">
+        <span class="hover:text-stone-200 transition"><i class="fa-solid fa-lock mr-1 text-[10px]"></i> 100% Private Ledger</span>
+        <span>|</span>
+        <a href="#security-section" class="text-red-400 hover:text-red-300 font-medium transition">Chính sách bảo vệ người dùng &rarr;</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= 1. GENTLE REMINDER BANNER (LỜI NHẮC NHẸ CUỐI NGÀY) ================= -->
+  <aside id="top-gentle-banner" aria-label="Lời nhắc nhở chi tiêu" class="bg-gradient-to-r from-red-50 via-rose-50 to-red-50 border-b border-red-100 text-red-950 px-6 py-2.5 text-xs transition-all relative">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <span class="flex h-2.5 w-2.5 relative">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-600"></span>
+        </span>
+        <p class="font-medium text-stone-700">
+          <strong class="text-red-900 font-bold">Gợi ý cuối ngày:</strong> Hôm nay bạn có phát sinh tiền trà đá, vé gửi xe hay cuốc xe ôm công nghệ nào chưa kịp lưu lại không?
+        </p>
+      </div>
+      <button onclick="dismissBanner()" class="text-stone-400 hover:text-red-700 ml-4 font-semibold text-[11px] flex items-center shrink-0">
+        Đã nhớ <i class="fa-solid fa-xmark ml-1"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ================= 2. MAIN HEADER (NAVBAR + LOGO ĐỎ TRẮNG) ================= -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-stone-200 sticky top-0 z-40 shadow-xs">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo & Identity -->
+      <div class="flex items-center space-x-6">
+        <div class="flex items-center space-x-3 cursor-pointer group" onclick="navigateTab('overview')">
+          
+          <!-- LOGO BIỂU TRƯNG: FINANCIAL COMPASS WALLET (ĐỎ - TRẮNG) -->
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 via-rose-600 to-red-800 text-white flex items-center justify-center shadow-md shadow-red-600/25 group-hover:scale-105 transition">
+            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Thân ví -->
+              <rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="2"/>
+              <!-- Nắp gập ví -->
+              <path d="M16 10H21V14H16C14.8954 14 14 13.1046 14 12C14 10.8954 14.8954 10 16 10Z" fill="currentColor"/>
+              <circle cx="17.5" cy="12" r="1" fill="#fecaca"/>
+              <!-- Kim la bàn tăng trưởng -->
+              <path d="M7 14L10 8L13 11L15 9" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div>
+            <span class="text-base font-extrabold tracking-tight text-stone-900 block leading-tight">Daily Spending</span>
+            <span class="text-[10px] text-red-600 font-bold uppercase tracking-wider">Companion • Sổ Thu Chi Sinh Viên</span>
+          </div>
+        </div>
+
+        <div class="h-4 w-[1px] bg-stone-200 hidden sm:block"></div>
+
+        <!-- Financial Period Indicator -->
+        <div class="hidden sm:flex items-center space-x-2 text-xs font-semibold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl border border-stone-200">
+          <i class="fa-regular fa-calendar-days text-red-600"></i>
+          <span>Kỳ tài chính: Tháng 10 / 2026</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-red-600 ml-1"></span>
+        </div>
+      </div>
+
+      <!-- Action items & Account -->
+      <div class="flex items-center space-x-3">
+        <!-- Streak Badge -->
+        <div class="hidden md:flex items-center space-x-2 text-xs font-bold">
+          <span class="bg-amber-500/10 text-amber-800 border border-amber-300/60 px-3 py-1.5 rounded-xl flex items-center shadow-xs">
+            <i class="fa-solid fa-fire text-amber-500 mr-1.5 text-xs"></i><span id="top-streak">6</span> ngày streak
+          </span>
+        </div>
+
+        <!-- Primary CTA: Daily Check-in Button (Red Highlight) -->
+        <button onclick="openCheckinModal()" class="bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-md shadow-red-600/25 flex items-center">
+          <i class="fa-solid fa-bolt-lightning mr-1.5 text-amber-300"></i> Check-in hôm nay
+        </button>
+
+        <!-- Auth State: User Menu / Login -->
+        <div id="auth-buttons-container"></div>
+      </div>
+
+    </div>
+
+    <!-- SUB-NAVIGATION BAR (Thanh menu tab với active indicator đỏ) -->
+    <div class="max-w-6xl mx-auto px-6 flex space-x-8 text-xs font-semibold border-t border-stone-100 overflow-x-auto">
+      <button onclick="navigateTab('overview')" id="tab-btn-overview" class="py-3 border-b-2 border-red-600 text-red-600 transition whitespace-nowrap flex items-center space-x-1.5">
+        <i class="fa-solid fa-chart-pie text-xs"></i><span>Tổng quan (Overview)</span>
+      </button>
+      <button onclick="navigateTab('ledger')" id="tab-btn-ledger" class="py-3 border-b-2 border-transparent text-stone-500 hover:text-stone-800 transition whitespace-nowrap flex items-center space-x-1.5">
+        <i class="fa-solid fa-receipt text-xs"></i><span>Sổ giao dịch (Ledger)</span>
+      </button>
+      <button onclick="navigateTab('mobility')" id="tab-btn-mobility" class="py-3 border-b-2 border-transparent text-stone-500 hover:text-stone-800 transition whitespace-nowrap flex items-center space-x-1.5">
+        <i class="fa-solid fa-route text-xs"></i><span>Phân tích Di chuyển (Mobility)</span>
+      </button>
+      <button onclick="navigateTab('monthly-review')" id="tab-btn-monthly-review" class="py-3 border-b-2 border-transparent text-stone-500 hover:text-stone-800 transition whitespace-nowrap flex items-center space-x-1.5">
+        <i class="fa-solid fa-award text-xs text-amber-500"></i>
+        <span>Tổng kết & Lời khuyên cuối tháng</span>
+        <span class="ml-1 px-1.5 py-0.5 bg-red-100 text-red-700 text-[9px] font-bold rounded-full">Báo cáo</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= 3. MAIN WORKSPACE ================= -->
+  <main class="max-w-6xl mx-auto w-full px-6 py-8 flex-1">
+
+    <!-- ================= VIEW 1: OVERVIEW ================= -->
+    <section id="tab-overview" class="space-y-6">
+      
+      <!-- Top Metrics 4 Ô Phong Cách Đỏ - Trắng -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Card 1: Ngân sách tháng (Đỏ Rượu / Deep Crimson) -->
+        <div class="bg-gradient-to-br from-stone-900 via-rose-950 to-red-950 text-white p-5 rounded-3xl shadow-lg shadow-rose-950/20 relative overflow-hidden flex flex-col justify-between">
+          <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-red-500/10 rounded-full blur-2xl"></div>
+          <div>
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-extrabold uppercase tracking-widest text-red-300">Ngân sách tháng</span>
+              <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full font-bold">10/2026</span>
+            </div>
+            <p class="text-2xl font-black mt-2 text-white tracking-tight" id="sum-monthly">3.000.000 đ</p>
+          </div>
+          <p class="text-[11px] text-red-200/70 mt-3 pt-2 border-t border-white/10">Cố định: 1.000.000 đ • Tiết kiệm: 500K</p>
+        </div>
+
+        <!-- Card 2: Đã chi tiêu -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-extrabold uppercase tracking-widest text-stone-400">Đã chi tiêu</span>
+              <span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-md" id="sum-spent-percent">48%</span>
+            </div>
+            <p class="text-2xl font-black mt-2 text-stone-900 tracking-tight" id="sum-spent">1.450.000 đ</p>
+          </div>
+          <div class="mt-3">
+            <div class="w-full bg-stone-100 h-2 rounded-full overflow-hidden">
+              <div id="overview-progress-bar" class="bg-gradient-to-r from-red-600 to-rose-500 h-full rounded-full transition-all duration-500" style="width: 48%"></div>
+            </div>
+            <p class="text-[10px] text-stone-400 mt-1.5">Tiến độ chi tiêu đang trong vùng an toàn</p>
+          </div>
+        </div>
+
+        <!-- Card 3: Khả dụng còn lại -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase tracking-widest text-stone-400">Khả dụng còn lại</span>
+            <p class="text-2xl font-black mt-2 text-red-700 tracking-tight" id="sum-remain">1.550.000 đ</p>
+          </div>
+          <p class="text-[11px] text-stone-500 mt-3 pt-2 border-t border-stone-100">
+            Hạn mức tiêu: <strong class="text-stone-800 font-bold">50.000 đ/ngày</strong>
+          </p>
+        </div>
+
+        <!-- Card 4: Hôm nay chi tiêu -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-extrabold uppercase tracking-widest text-stone-400">Hôm nay</span>
+              <span id="overview-status-badge" class="text-[10px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-md border border-red-200">
+                🟢 Trong hạn mức
+              </span>
+            </div>
+            <p class="text-2xl font-black mt-2 text-stone-900 tracking-tight" id="sum-today">55.000 đ</p>
+          </div>
+          <p class="text-[11px] text-stone-400 mt-3 pt-2 border-t border-stone-100">
+            Định mức ngày: <strong class="text-stone-700">65.000 đ</strong>
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Smart Recall: Gợi ý khoản chi thường quên (Red & Cream) -->
+      <div class="bg-gradient-to-r from-red-50 via-rose-50/50 to-amber-50/40 p-5 rounded-3xl border border-red-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-start space-x-3.5">
+          <div class="w-10 h-10 rounded-2xl bg-red-600 text-white flex items-center justify-center text-lg font-bold shadow-md shadow-red-600/25 shrink-0">
+            ⚡
+          </div>
+          <div>
+            <h4 class="text-xs font-extrabold text-stone-900 uppercase tracking-wider flex items-center">
+              Smart Recall — Ghi nhanh khoản chi dễ quên
+              <span class="ml-2 text-[9px] bg-red-200 text-red-900 px-2 py-0.5 rounded-full font-bold">Tiện ích</span>
+            </h4>
+            <p class="text-xs text-stone-600 mt-0.5">Một chạm để thêm nhanh các khoản tiêu vặt sinh viên hay quên vào cuối ngày:</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="quickAddExpense('Vé gửi xe trường', 5000, 'other')" class="px-3.5 py-2 bg-white hover:bg-stone-50 text-stone-700 rounded-xl text-xs font-bold border border-stone-200 shadow-xs transition hover:scale-102">
+            🛵 Gửi xe 5K
+          </button>
+          <button onclick="quickAddExpense('Cơm trưa sinh viên', 35000, 'food')" class="px-3.5 py-2 bg-white hover:bg-stone-50 text-stone-700 rounded-xl text-xs font-bold border border-stone-200 shadow-xs transition hover:scale-102">
+            🍛 Cơm trưa 35K
+          </button>
+          <button onclick="quickAddExpense('Cà phê / Trà sữa', 20000, 'food')" class="px-3.5 py-2 bg-white hover:bg-stone-50 text-stone-700 rounded-xl text-xs font-bold border border-stone-200 shadow-xs transition hover:scale-102">
+            ☕ Nước uống 20K
+          </button>
+        </div>
+      </div>
+
+      <!-- Middle Grid: Bảng gần nhất + Mobility Card -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Hoạt động gần đây (2 Cols) -->
+        <div class="lg:col-span-2 bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden flex flex-col justify-between">
+          <div>
+            <div class="px-6 py-4 border-b border-stone-100 flex justify-between items-center">
+              <h3 class="text-xs font-extrabold text-stone-800 uppercase tracking-wider flex items-center">
+                <i class="fa-solid fa-clock-rotate-left mr-2 text-red-600"></i> Lịch sử check-in hôm nay
+              </h3>
+              <button onclick="navigateTab('ledger')" class="text-xs text-red-600 hover:text-red-800 font-bold transition">Xem toàn bộ sổ &rarr;</button>
+            </div>
+            <div class="divide-y divide-stone-100 text-xs" id="overview-recent-list"></div>
+          </div>
+          <div class="p-3 bg-stone-50 border-t border-stone-100 text-center text-[11px] text-stone-400">
+            Dữ liệu được lưu trữ trực tiếp trên thiết bị của bạn an toàn
+          </div>
+        </div>
+
+        <!-- Mobility Summary Card (1 Col) - USP Core Đỏ Đậm -->
+        <div class="bg-gradient-to-br from-red-950 via-rose-950 to-stone-900 text-white p-6 rounded-3xl shadow-lg shadow-red-950/20 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-extrabold uppercase tracking-widest text-red-300">🚗 Mobility Core Insight</span>
+              <span class="text-[10px] bg-red-500/30 text-red-200 px-2 py-0.5 rounded-full font-bold">USP Sản phẩm</span>
+            </div>
+            <p class="text-3xl font-black mt-2 tracking-tight" id="sum-mobility">320.000 đ</p>
+            <p class="text-xs text-red-200/80 mt-1">Chiếm <strong class="text-white font-bold">22%</strong> tổng chi tiêu tháng của bạn</p>
+
+            <div class="mt-4 pt-4 border-t border-white/10 space-y-2.5 text-xs text-red-100">
+              <div class="flex justify-between items-center">
+                <span>🛵 Xe máy xăng:</span>
+                <span class="font-bold text-white">150.000 đ</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span>🚕 Ride-hailing (Grab/Be):</span>
+                <span class="font-bold text-amber-300">90.000 đ</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span>🚌 Xe buýt & Metro:</span>
+                <span class="font-bold text-rose-300">80.000 đ</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3.5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 text-xs text-red-100 leading-relaxed">
+            <i class="fa-solid fa-lightbulb text-amber-400 mr-1.5"></i>
+            “Chi phí đi lại tuần này đã tiết kiệm hơn <strong>35.000 đ</strong> nhờ bạn ưu tiên đi xe buýt vào thứ 3 & thứ 5.”
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ================= VIEW 2: LEDGER (SỔ GIAO DỊCH DẠNG BẢNG) ================= -->
+    <section id="tab-ledger" class="space-y-4 hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-lg font-black text-stone-900">Sổ theo dõi giao dịch</h2>
+          <p class="text-xs text-stone-500">Lưu trữ minh bạch, kiểm tra chi tiết các khoản chi từng ngày</p>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="openCheckinModal()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+            + Thêm khoản chi mới
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-stone-50 text-stone-400 font-bold uppercase tracking-wider border-b border-stone-100">
+              <tr>
+                <th class="py-3.5 px-6">Thời gian</th>
+                <th class="py-3.5 px-6">Mô tả khoản chi</th>
+                <th class="py-3.5 px-6">Phân loại</th>
+                <th class="py-3.5 px-6">Phương tiện (Mobility)</th>
+                <th class="py-3.5 px-6 text-right">Số tiền</th>
+              </tr>
+            </thead>
+            <tbody id="ledger-table-body" class="divide-y divide-stone-100 text-stone-700"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 3: MOBILITY DEEP-DIVE ================= -->
+    <section id="tab-mobility" class="space-y-6 hidden">
+      <div>
+        <h2 class="text-lg font-black text-stone-900">Báo cáo chuyên sâu: Chi phí di chuyển</h2>
+        <p class="text-xs text-stone-500">Bóc tách thói quen đi lại giúp sinh viên nhận diện các khoản rò rỉ ngân sách</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-white rounded-3xl border border-stone-200 shadow-sm p-6 space-y-4">
+          <div class="flex justify-between items-center border-b border-stone-100 pb-3">
+            <h3 class="text-xs font-extrabold text-stone-800 uppercase tracking-wider">Cơ cấu chi phí theo phương tiện</h3>
+            <span class="text-xs font-bold text-red-600">Tổng: 320.000 đ (22% ngân sách)</span>
+          </div>
+          
+          <div class="divide-y divide-stone-100 text-xs">
+            <div class="py-3.5 flex justify-between items-center">
+              <div>
+                <p class="font-bold text-stone-800">🛵 Xe máy cá nhân (Xăng + Gửi xe)</p>
+                <p class="text-[11px] text-stone-400">Chiếm 47% tổng chi phí đi lại của bạn</p>
+              </div>
+              <span class="font-black text-stone-900 text-sm">150.000 đ</span>
+            </div>
+
+            <div class="py-3.5 flex justify-between items-center">
+              <div>
+                <p class="font-bold text-stone-800">🚕 Ride-hailing (Grab / Be / Xanh SM)</p>
+                <p class="text-[11px] text-amber-600 font-medium">Chỉ 3 chuyến nhưng chiếm 28% tổng tiền đi lại</p>
+              </div>
+              <span class="font-black text-red-600 text-sm">90.000 đ</span>
+            </div>
+
+            <div class="py-3.5 flex justify-between items-center">
+              <div>
+                <p class="font-bold text-stone-800">🚌 Xe buýt sinh viên</p>
+                <p class="text-[11px] text-rose-600 font-medium">12 lượt đi học • Chiếm 19%</p>
+              </div>
+              <span class="font-black text-rose-700 text-sm">60.000 đ</span>
+            </div>
+
+            <div class="py-3.5 flex justify-between items-center">
+              <div>
+                <p class="font-bold text-stone-800">🚆 Tuyến Metro</p>
+                <p class="text-[11px] text-stone-400">2 lượt trải nghiệm • Chiếm 6%</p>
+              </div>
+              <span class="font-black text-stone-900 text-sm">20.000 đ</span>
+            </div>
+          </div>
+
+          <div class="p-4 bg-red-50/80 border border-red-100 rounded-2xl text-xs text-red-950 leading-relaxed font-medium">
+            💡 <strong>Smart Mobility Insight:</strong> “Ride-hailing chỉ diễn ra <strong>3 chuyến</strong> nhưng chiếm tới <strong>28%</strong> chi phí di chuyển tháng này của bạn. Đổi 1 chuyến sang Bus/Metro có thể giúp bạn tiết kiệm khoảng 40.000đ.”
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-sm p-6 flex flex-col justify-between space-y-4">
+          <div>
+            <span class="text-xs font-bold text-stone-400 uppercase tracking-wider">💡 Đề xuất tối ưu ví tiền</span>
+            <h4 class="text-sm font-bold text-stone-900 mt-2">Kế hoạch cải thiện chi phí đi lại</h4>
+            <p class="text-xs text-stone-500 mt-1 leading-relaxed">
+              Chi phí di chuyển hiện tại chiếm <strong>22%</strong> ngân sách tháng (chuẩn sinh viên lý tưởng là dưới 15%).
+            </p>
+
+            <div class="mt-4 pt-4 border-t border-stone-100 space-y-3 text-xs text-stone-600">
+              <div class="p-3 bg-stone-50 rounded-2xl border border-stone-100">
+                <span class="font-bold text-stone-800 block">🚌 Làm vé tháng xe buýt:</span>
+                <span class="text-[11px] text-stone-500">Tiết kiệm khoảng ~80.000đ/tháng so với đi xe máy và tiền gửi xe hàng ngày.</span>
+              </div>
+              <div class="p-3 bg-stone-50 rounded-2xl border border-stone-100">
+                <span class="font-bold text-stone-800 block">🚕 Hạn chế gọi xe giờ cao điểm:</span>
+                <span class="text-[11px] text-stone-500">Tránh phụ phí mưa và cước giờ tan tầm bằng cách đi chung với bạn bè.</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-stone-400 italic">
+            * Dữ liệu phân tích giúp bạn nhìn nhận chính xác thói quen di chuyển thay vì chỉ xem tổng tiền.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 4: TỔNG KẾT & LỜI KHUYÊN CUỐI THÁNG ================= -->
+    <section id="tab-monthly-review" class="space-y-6 hidden">
+      <div class="flex justify-between items-start">
+        <div>
+          <h2 class="text-lg font-black text-stone-900">📊 Báo cáo tổng kết & Lời khuyên tài chính cuối tháng</h2>
+          <p class="text-xs text-stone-500">Đánh giá sức khỏe tài chính & gợi ý hành động cụ thể cho tháng kế tiếp</p>
+        </div>
+        <span class="px-3 py-1 bg-red-100 text-red-800 text-xs font-bold rounded-full">Kỳ tháng 09/2026</span>
+      </div>
+
+      <!-- Health Score Card -->
+      <div class="bg-gradient-to-r from-red-700 via-rose-800 to-stone-900 text-white p-6 rounded-3xl shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <span class="text-xs text-red-200 font-semibold uppercase tracking-wider">Đánh giá chung</span>
+          <h3 class="text-2xl font-black mt-1">Tài chính Tốt — Tiết kiệm thành công 500.000 đ!</h3>
+          <p class="text-xs text-red-200 mt-1">Bạn đã duy trì được 22/30 ngày chi tiêu dưới ngân sách linh hoạt ngày.</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md px-6 py-3 rounded-2xl text-center border border-white/20">
+          <span class="text-[10px] text-red-200 uppercase font-bold">Chỉ số kỷ luật</span>
+          <p class="text-3xl font-black text-amber-300">8.5 <span class="text-sm text-white font-normal">/ 10</span></p>
+        </div>
+      </div>
+
+      <!-- 3 Lời khuyên tài chính cụ thể -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="bg-white p-6 rounded-3xl border border-stone-200 shadow-sm space-y-3">
+          <div class="w-10 h-10 bg-amber-500/10 text-amber-600 rounded-2xl flex items-center justify-center text-lg font-bold">
+            ☕
+          </div>
+          <h4 class="font-bold text-sm text-stone-900">Khoản chi Ăn uống & Cà phê</h4>
+          <p class="text-xs text-stone-500 leading-relaxed">
+            Ăn uống chiếm <strong>42% (609.000 đ)</strong> tổng chi tiêu. Các khoản trà sữa, cà phê vặt vào buổi chiều đang chiếm ~150.000đ/tháng.
+          </p>
+          <div class="pt-2 border-t border-stone-100 text-xs font-bold text-red-600">
+            👉 Lời khuyên: Mang theo bình nước cá nhân hoặc tự pha cà phê tại phòng trọ 2 buổi/tuần có thể dư thêm 80K.
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl border border-stone-200 shadow-sm space-y-3">
+          <div class="w-10 h-10 bg-rose-500/10 text-rose-600 rounded-2xl flex items-center justify-center text-lg font-bold">
+            🛵
+          </div>
+          <h4 class="font-bold text-sm text-stone-900">Tối ưu Chi phí Di chuyển</h4>
+          <p class="text-xs text-stone-500 leading-relaxed">
+            Bạn đã chi <strong>320.000 đ</strong> cho di chuyển. Trong đó chi phí đặt xe công nghệ (Ride-hailing) những ngày mưa khá cao (90.000đ/3 chuyến).
+          </p>
+          <div class="pt-2 border-t border-stone-100 text-xs font-bold text-red-600">
+            👉 Lời khuyên: Đăng ký vé tháng xe buýt sinh viên hoặc đi chung xe với bạn cùng lớp vào những ngày học chính khoá.
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl border border-stone-200 shadow-sm space-y-3">
+          <div class="w-10 h-10 bg-red-500/10 text-red-600 rounded-2xl flex items-center justify-center text-lg font-bold">
+            🎯
+          </div>
+          <h4 class="font-bold text-sm text-stone-900">Kế hoạch cho Tháng 11</h4>
+          <p class="text-xs text-stone-500 leading-relaxed">
+            Tháng sau bạn có kỳ thi học kỳ, chi phí in ấn tài liệu và học nhóm có thể tăng khoảng 100.000 đ.
+          </p>
+          <div class="pt-2 border-t border-stone-100 text-xs font-bold text-red-600">
+            👉 Lời khuyên: Nâng hạn mức danh mục Học tập thêm 100K và giảm nhẹ danh mục Mua sắm để giữ vững khoản tiết kiệm 500K.
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ================= 4. COMPREHENSIVE FOOTER (BẢO MẬT & PHÁP LÝ ĐẦY ĐỦ) ================= -->
+  <footer id="security-section" class="bg-white border-t border-stone-200 mt-16 text-stone-600 text-xs">
+    <div class="max-w-6xl mx-auto px-6 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+        
+        <!-- Col 1: Brand & Commitment -->
+        <div class="md:col-span-1 space-y-3">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-8 h-8 rounded-lg bg-red-600 text-white flex items-center justify-center shadow-xs">
+              <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="2"/>
+                <path d="M16 10H21V14H16C14.8954 14 14 13.1046 14 12C14 10.8954 14.8954 10 16 10Z" fill="currentColor"/>
+              </svg>
+            </div>
+            <span class="font-extrabold text-sm text-stone-900">Daily Spending Companion</span>
+          </div>
+          <p class="text-stone-500 text-[11px] leading-relaxed">
+            Dự án nghiên cứu & phát triển công cụ quản trị tài chính cá nhân dành riêng cho sinh viên đại học.
+          </p>
+          <div class="flex items-center space-x-2 text-red-600 font-semibold text-[11px]">
+            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+            <span>Hệ thống bảo mật cục bộ hoạt động bình thường</span>
+          </div>
+        </div>
+
+        <!-- Col 2: Cam đoan & Bảo mật (Security & Privacy) -->
+        <div class="space-y-2.5">
+          <h5 class="font-bold text-stone-900 text-xs uppercase tracking-wider">Cam đoan & Bảo mật</h5>
+          <ul class="space-y-2 text-[11px] text-stone-500">
+            <li class="flex items-start"><i class="fa-solid fa-lock text-red-600 mr-1.5 mt-0.5"></i> Lưu trữ Client-Side: Toàn bộ dữ liệu nằm trực tiếp trong trình duyệt của bạn.</li>
+            <li class="flex items-start"><i class="fa-solid fa-user-shield text-red-600 mr-1.5 mt-0.5"></i> Quyền riêng tư tuyệt đối: Không thu thập lịch sử giao dịch nhằm mục đích thương mại.</li>
+            <li class="flex items-start"><i class="fa-solid fa-database text-red-600 mr-1.5 mt-0.5"></i> Không chia sẻ thông tin với bất kỳ ngân hàng hay bên thứ ba nào.</li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Phương pháp luận & Tính năng -->
+        <div class="space-y-2.5">
+          <h5 class="font-bold text-stone-900 text-xs uppercase tracking-wider">Hệ thống tính năng</h5>
+          <ul class="space-y-2 text-[11px] text-stone-500">
+            <li>• Daily Check-in 30 giây cuối ngày</li>
+            <li>• Phân tích sâu chi phí Di chuyển (Mobility)</li>
+            <li>• Nhập liệu thông minh bằng giọng nói (Voice NLP)</li>
+            <li>• Báo cáo đánh giá tài chính định kỳ cuối tháng</li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Hỗ trợ sinh viên & Trách nhiệm -->
+        <div class="space-y-2.5">
+          <h5 class="font-bold text-stone-900 text-xs uppercase tracking-wider">Hỗ trợ & Liên hệ</h5>
+          <p class="text-[11px] text-stone-500 leading-relaxed">
+            Dành cho sinh viên cần tư vấn phương pháp quản lý ngân sách hoặc đóng góp phản hồi cải tiến sản phẩm.
+          </p>
+          <p class="text-[11px] font-semibold text-stone-700">Email: <a href="mailto:support@dailyspending.vn" class="text-red-600 hover:underline">support@dailyspending.vn</a></p>
+          <p class="text-[10px] text-stone-400">Phiên bản: Web MVP Scarlet Edition (2026)</p>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="border-t border-stone-100 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-[11px] text-stone-400">
+        <p>© 2026 Daily Spending Companion. All rights reserved. Nghiên cứu độc lập vì cộng đồng sinh viên.</p>
+        <div class="flex space-x-4">
+          <a href="#" class="hover:text-stone-600 transition">Điều khoản sử dụng</a>
+          <span>•</span>
+          <a href="#" class="hover:text-stone-600 transition">Chính sách quyền riêng tư</a>
+          <span>•</span>
+          <a href="#" class="hover:text-stone-600 transition">Quy chuẩn bảo mật</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= MODAL 1: CHECK-IN & NHẬP LIỆU GIỌNG NÓI ================= -->
+  <div id="modal-checkin" class="fixed inset-0 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl border border-stone-100 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll">
+      
+      <div class="flex justify-between items-start">
+        <div>
+          <span class="text-[10px] font-extrabold text-red-600 uppercase tracking-wider">Daily Spending Check-in</span>
+          <h3 class="text-base font-black text-stone-900 mt-0.5">💰 Hôm nay bạn đã chi tiêu như thế nào?</h3>
+        </div>
+        <button onclick="closeCheckinModal()" class="text-stone-400 hover:text-stone-600">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- VOICE INPUT FEATURE (NHẬP LIỆU GIỌNG NÓI & NLP ALGORITHM) -->
+      <div class="p-4 bg-gradient-to-r from-red-50 to-rose-50 rounded-2xl border border-red-200 space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-bold text-red-950 flex items-center">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-red-600"></i> Nhập nhanh bằng giọng nói / Câu tự nhiên
+          </span>
+          <span id="voice-badge" class="text-[10px] bg-red-200 text-red-900 font-extrabold px-2 py-0.5 rounded-full">NLP AI</span>
+        </div>
+
+        <div class="relative flex items-center">
+          <input type="text" id="voice-text-input" placeholder='Nói hoặc gõ ví dụ: "tôi đã ăn phần cơm trưa 35k"' class="w-full pl-3.5 pr-12 py-2.5 bg-white border border-red-200 rounded-xl text-xs font-medium text-stone-800 focus:outline-none focus:ring-2 focus:ring-red-500">
+          
+          <!-- Microphone Button -->
+          <button type="button" id="mic-btn" onclick="toggleVoiceRecognition()" title="Bấm để nói bằng giọng nói" class="absolute right-1.5 w-8 h-8 rounded-lg bg-red-600 hover:bg-red-700 text-white flex items-center justify-center transition shadow-xs">
+            <i class="fa-solid fa-microphone text-xs" id="mic-icon"></i>
+          </button>
+        </div>
+
+        <div class="flex justify-between items-center text-[11px] text-red-900">
+          <span id="voice-hint">Bấm mic hoặc nhập câu và bấm [Phân tích câu]</span>
+          <button type="button" onclick="parseNaturalInput()" class="font-bold underline hover:text-red-950">Phân tích câu &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Quick Action: Không tiêu gì -->
+      <button onclick="submitNoSpendDay()" class="w-full py-2.5 bg-stone-50 hover:bg-stone-100 border border-stone-200 text-stone-700 text-xs font-semibold rounded-xl transition flex items-center justify-center">
+        🌱 Hôm nay tôi không chi tiêu
+      </button>
+
+      <!-- Standard Form Inputs -->
+      <div class="space-y-3.5 text-xs pt-1">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Số tiền (VND)</label>
+          <input type="number" id="chk-amount" placeholder="Ví dụ: 35000" step="1000" class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm font-black text-stone-900 focus:outline-none focus:ring-2 focus:ring-red-500">
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1.5">Danh mục chi tiêu</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="selectCategory('food')" class="cat-btn p-2 border border-stone-200 rounded-xl font-medium text-stone-700 flex items-center justify-center space-x-1.5 hover:bg-stone-50" data-cat="food">
+              <span>🍜</span><span>Ăn uống</span>
+            </button>
+            <button type="button" onclick="selectCategory('transport')" class="cat-btn p-2 border border-stone-200 rounded-xl font-medium text-stone-700 flex items-center justify-center space-x-1.5 hover:bg-stone-50" data-cat="transport">
+              <span>🚗</span><span>Di chuyển</span>
+            </button>
+            <button type="button" onclick="selectCategory('study')" class="cat-btn p-2 border border-stone-200 rounded-xl font-medium text-stone-700 flex items-center justify-center space-x-1.5 hover:bg-stone-50" data-cat="study">
+              <span>📚</span><span>Học tập</span>
+            </button>
+            <button type="button" onclick="selectCategory('shopping')" class="cat-btn p-2 border border-stone-200 rounded-xl font-medium text-stone-700 flex items-center justify-center space-x-1.5 hover:bg-stone-50" data-cat="shopping">
+              <span>🛍</span><span>Mua sắm</span>
+            </button>
+            <button type="button" onclick="selectCategory('entertain')" class="cat-btn p-2 border border-stone-200 rounded-xl font-medium text-stone-700 flex items-center justify-center space-x-1.5 hover:bg-stone-50" data-cat="entertain">
+              <span>🎮</span><span>Giải trí</span>
+            </button>
+            <button type="button" onclick="selectCategory('other')" class="cat-btn p-2 border border-stone-200 rounded-xl font-medium text-stone-700 flex items-center justify-center space-x-1.5 hover:bg-stone-50" data-cat="other">
+              <span>📦</span><span>Khác</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- CONDITIONAL MOBILITY FORM -->
+        <div id="mobility-form" class="hidden p-4 bg-red-50/70 border border-red-200 rounded-2xl space-y-2.5">
+          <div class="flex justify-between items-center text-red-950 font-bold">
+            <span>🚗 Chi tiết di chuyển (Mobility Detail)</span>
+            <span class="text-[10px] bg-red-200 px-2 py-0.5 rounded font-bold">USP Core</span>
+          </div>
+
+          <div>
+            <label class="block text-[11px] text-stone-600 mb-1">Phương tiện di chuyển</label>
+            <select id="mob-mode" class="w-full px-3 py-2 bg-white border border-red-200 rounded-xl text-xs font-medium focus:outline-none">
+              <option value="motorbike">🛵 Xe máy cá nhân (Xăng + Phí gửi xe)</option>
+              <option value="ridehailing">🚕 Ride-hailing (Grab / Be / Xanh SM)</option>
+              <option value="bus">🚌 Xe buýt sinh viên</option>
+              <option value="metro">🚆 Tuyến Metro</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Ghi chú diễn giải</label>
+          <input type="text" id="chk-note" placeholder="Ví dụ: Ăn phần cơm trưa, đổ xăng..." class="w-full px-4 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none">
+        </div>
+      </div>
+
+      <button onclick="submitCheckin()" class="w-full py-3.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-extrabold rounded-2xl text-xs transition shadow-lg shadow-red-600/25">
+        Hoàn tất Check-in
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ================= MODAL 2: AUTH DIALOG ================= -->
+  <div id="modal-auth" class="fixed inset-0 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-stone-100 space-y-4">
+      <div class="flex justify-between items-start">
+        <div>
+          <h3 id="auth-modal-title" class="text-lg font-black text-stone-900">Đăng nhập tài khoản</h3>
+          <p class="text-xs text-stone-400 mt-0.5">Sổ chi tiêu cá nhân sinh viên</p>
+        </div>
+        <button onclick="closeAuthModal()" class="text-stone-400 hover:text-stone-600">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleAuthSubmit(event)" class="space-y-3 text-xs">
+        <div id="auth-field-name" class="hidden">
+          <label class="block font-bold text-stone-700 mb-1">Họ tên</label>
+          <input type="text" id="auth-name" placeholder="Ví dụ: Minh" value="Minh" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs">
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Email</label>
+          <input type="email" id="auth-email" required placeholder="student@vlu.edu.vn" value="minh@gmail.com" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs">
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Mật khẩu</label>
+          <input type="password" id="auth-pass" required value="123456" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs">
+        </div>
+
+        <button type="submit" id="auth-submit-btn" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition">
+          Đăng nhập
+        </button>
+      </form>
+
+      <div class="text-center pt-2">
+        <button type="button" onclick="toggleAuthMode()" id="auth-switch-btn" class="text-xs text-red-600 font-bold hover:underline">
+          Chưa có tài khoản? Đăng ký ngay
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT STATE ENGINE -->
+  <script>
+    const INITIAL_STATE = {
+      user: { name: "Minh", email: "minh@gmail.com", loggedIn: true },
+      streak: 6,
+      monthlyBudget: 3000000,
+      dailyBudget: 65000,
+      expenses: [
+        { id: 1, date: "01/10/2026", time: "07:30", note: "Bánh mì chả lụa", cat: "food", amount: 25000, mobility: null },
+        { id: 2, date: "01/10/2026", time: "09:15", note: "Cà phê sữa đá", cat: "food", amount: 20000, mobility: null },
+        { id: 3, date: "01/10/2026", time: "10:00", note: "Vé gửi xe trường ĐH", cat: "transport", amount: 10000, mobility: { mode: "🛵 Xe máy" } }
+      ]
+    };
+
+    let state = JSON.parse(localStorage.getItem('dsc_app_state_scarlet_red')) || INITIAL_STATE;
+    let selectedCat = 'food';
+    let isRegisterMode = false;
+    let recognition = null;
+    let isRecording = false;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderAuthHeader();
+      renderAll();
+      setupSpeechRecognition();
+    });
+
+    function saveState() {
+      localStorage.setItem('dsc_app_state_scarlet_red', JSON.stringify(state));
+    }
+
+    function dismissBanner() {
+      document.getElementById('top-gentle-banner').classList.add('hidden');
+    }
+
+    function navigateTab(tabKey) {
+      const tabs = ['overview', 'ledger', 'mobility', 'monthly-review'];
+      tabs.forEach(t => {
+        const el = document.getElementById(`tab-${t}`);
+        if (el) el.classList.add('hidden');
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (btn) btn.className = "py-3 border-b-2 border-transparent text-stone-500 hover:text-stone-800 transition whitespace-nowrap flex items-center space-x-1.5";
+      });
+
+      const activeTab = document.getElementById(`tab-${tabKey}`);
+      if (activeTab) activeTab.classList.remove('hidden');
+
+      const activeBtn = document.getElementById(`tab-btn-${tabKey}`);
+      if (activeBtn) activeBtn.className = "py-3 border-b-2 border-red-600 text-red-600 font-bold transition whitespace-nowrap flex items-center space-x-1.5";
+    }
+
+    // --- AUTH FLOW ---
+    function renderAuthHeader() {
+      const container = document.getElementById('auth-buttons-container');
+      if (state.user && state.user.loggedIn) {
+        container.innerHTML = `
+          <div class="flex items-center space-x-2 bg-stone-50 border border-stone-200 px-2.5 py-1 rounded-xl text-xs">
+            <span class="w-6 h-6 rounded-lg bg-red-100 text-red-700 font-bold flex items-center justify-center text-[11px]">${state.user.name[0]}</span>
+            <span class="font-bold text-stone-800">${state.user.name}</span>
+            <button onclick="handleLogout()" title="Đăng xuất" class="text-stone-400 hover:text-red-500 ml-1">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <button onclick="openAuthModal()" class="text-xs font-bold text-stone-700 hover:text-red-600 px-3 py-1.5 rounded-xl border border-stone-200 transition">
+            Đăng nhập / Đăng ký
+          </button>
+        `;
+      }
+    }
+
+    function openAuthModal() {
+      document.getElementById('modal-auth').classList.remove('hidden');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('modal-auth').classList.add('hidden');
+    }
+
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
+      const title = document.getElementById('auth-modal-title');
+      const submitBtn = document.getElementById('auth-submit-btn');
+      const switchBtn = document.getElementById('auth-switch-btn');
+      const nameField = document.getElementById('auth-field-name');
+
+      if (isRegisterMode) {
+        title.innerText = 'Đăng ký tài khoản';
+        submitBtn.innerText = 'Tạo tài khoản';
+        switchBtn.innerText = 'Đã có tài khoản? Đăng nhập';
+        nameField.classList.remove('hidden');
+      } else {
+        title.innerText = 'Đăng nhập tài khoản';
+        submitBtn.innerText = 'Đăng nhập';
+        switchBtn.innerText = 'Chưa có tài khoản? Đăng ký ngay';
+        nameField.classList.add('hidden');
+      }
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const name = isRegisterMode ? document.getElementById('auth-name').value : "Minh";
+
+      state.user = { name, email, loggedIn: true };
+      saveState();
+      closeAuthModal();
+      renderAuthHeader();
+      alert(`Chào mừng ${name}! Bạn đã đăng nhập thành công.`);
+    }
+
+    function handleLogout() {
+      state.user = { loggedIn: false };
+      saveState();
+      renderAuthHeader();
+      alert("Đã đăng xuất tài khoản.");
+    }
+
+    // --- VOICE RECOGNITION & NLP ---
+    function setupSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        document.getElementById('voice-hint').innerText = "Trình duyệt không hỗ trợ Web Speech. Bạn có thể gõ câu trực tiếp.";
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = 'vi-VN';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        isRecording = true;
+        document.getElementById('mic-btn').classList.add('animate-mic', 'bg-red-500');
+        document.getElementById('voice-hint').innerText = "🎙️ Đang lắng nghe... Hãy nói câu của bạn (ví dụ: cơm trưa 35k)";
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('voice-text-input').value = transcript;
+        parseNaturalInput(transcript);
+      };
+
+      recognition.onerror = () => {
+        isRecording = false;
+        document.getElementById('mic-btn').classList.remove('animate-mic', 'bg-red-500');
+        document.getElementById('voice-hint').innerText = "Không nhận diện được giọng nói. Vui lòng thử lại.";
+      };
+
+      recognition.onend = () => {
+        isRecording = false;
+        document.getElementById('mic-btn').classList.remove('animate-mic', 'bg-red-500');
+      };
+    }
+
+    function toggleVoiceRecognition() {
+      if (!recognition) {
+        alert("Trình duyệt không hỗ trợ Speech API. Bạn hãy gõ câu trực tiếp vào ô input.");
+        return;
+      }
+      if (isRecording) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    }
+
+    function parseNaturalInput(customText) {
+      const text = customText || document.getElementById('voice-text-input').value;
+      if (!text || text.trim() === '') {
+        alert("Vui lòng nói hoặc nhập câu chi tiêu!");
+        return;
+      }
+
+      const lower = text.toLowerCase();
+      let extractedAmount = null;
+
+      const matchK = lower.match(/(\d+)\s*(k|nghìn|ngàn|đ|vnd)/);
+      const matchRawNum = lower.match(/\b\d{4,7}\b/);
+
+      if (matchK) {
+        let num = parseInt(matchK[1]);
+        if (['k', 'nghìn', 'ngàn'].includes(matchK[2])) {
+          extractedAmount = num * 1000;
+        } else {
+          extractedAmount = num;
+        }
+      } else if (matchRawNum) {
+        extractedAmount = parseInt(matchRawNum[0]);
+      } else {
+        const matchSmall = lower.match(/\b(\d{2,3})\b/);
+        if (matchSmall) extractedAmount = parseInt(matchSmall[1]) * 1000;
+      }
+
+      if (extractedAmount) {
+        document.getElementById('chk-amount').value = extractedAmount;
+      }
+
+      let detectedCat = 'other';
+      if (/cơm|ăn|bún|phở|bánh mì|nước|trà sữa|cà phê|cafe|snack|ăn vặt/.test(lower)) {
+        detectedCat = 'food';
+      } else if (/xe|grab|be|bus|buýt|xăng|gửi xe|metro|đi lại/.test(lower)) {
+        detectedCat = 'transport';
+      } else if (/sách|vở|bút|giáo trình|photo|học phí|in ấn/.test(lower)) {
+        detectedCat = 'study';
+      } else if (/quần áo|áo|mua|shopee|lazada|tiktok shop/.test(lower)) {
+        detectedCat = 'shopping';
+      } else if (/phim|game|xem phim|chơi/.test(lower)) {
+        detectedCat = 'entertain';
+      }
+
+      selectCategory(detectedCat);
+      document.getElementById('chk-note').value = text;
+      document.getElementById('voice-hint').innerHTML = `✅ Đã nhận diện: <strong>${formatVND(extractedAmount || 0)}</strong> • Danh mục: <strong>${getCatName(detectedCat)}</strong>`;
+    }
+
+    // --- CHECK-IN LOGIC ---
+    function openCheckinModal() {
+      selectCategory('food');
+      document.getElementById('modal-checkin').classList.remove('hidden');
+    }
+
+    function closeCheckinModal() {
+      document.getElementById('modal-checkin').classList.add('hidden');
+    }
+
+    function selectCategory(cat) {
+      selectedCat = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        if (btn.getAttribute('data-cat') === cat) {
+          btn.className = "cat-btn p-2 border border-red-600 bg-red-50 text-red-900 rounded-xl font-bold flex items-center justify-center space-x-1.5 shadow-xs";
+        } else {
+          btn.className = "cat-btn p-2 border border-stone-200 rounded-xl font-medium text-stone-700 flex items-center justify-center space-x-1.5 hover:bg-stone-50";
+        }
+      });
+
+      const mobForm = document.getElementById('mobility-form');
+      if (cat === 'transport') {
+        mobForm.classList.remove('hidden');
+      } else {
+        mobForm.classList.add('hidden');
+      }
+    }
+
+    function submitCheckin() {
+      const amount = Number(document.getElementById('chk-amount').value);
+      if (!amount || amount <= 0) {
+        alert("Vui lòng nhập hoặc nói số tiền chi tiêu hợp lệ!");
+        return;
+      }
+
+      const note = document.getElementById('chk-note').value || (selectedCat === 'transport' ? "Di chuyển" : "Khoản chi sinh hoạt");
+      let mobData = null;
+      if (selectedCat === 'transport') {
+        const modeLabel = document.getElementById('mob-mode').options[document.getElementById('mob-mode').selectedIndex].text;
+        mobData = { mode: modeLabel };
+      }
+
+      const now = new Date();
+      state.expenses.unshift({
+        id: Date.now(),
+        date: "01/10/2026",
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
+        note: note,
+        cat: selectedCat,
+        amount: amount,
+        mobility: mobData
+      });
+
+      state.streak += 1;
+      saveState();
+
+      closeCheckinModal();
+      renderAll();
+      alert(`🎉 Check-in hoàn tất! Chuỗi kỷ luật tăng lên ${state.streak} ngày liên tục.`);
+
+      document.getElementById('chk-amount').value = '';
+      document.getElementById('chk-note').value = '';
+      document.getElementById('voice-text-input').value = '';
+    }
+
+    function quickAddExpense(note, amount, cat) {
+      const now = new Date();
+      state.expenses.unshift({
+        id: Date.now(),
+        date: "01/10/2026",
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
+        note: note,
+        cat: cat,
+        amount: amount,
+        mobility: cat === 'transport' ? { mode: "🛵 Xe máy" } : null
+      });
+
+      saveState();
+      renderAll();
+      alert(`Đã thêm nhanh "${note}" (${formatVND(amount)}) thành công!`);
+    }
+
+    function submitNoSpendDay() {
+      state.streak += 1;
+      saveState();
+      closeCheckinModal();
+      renderAll();
+      alert("🌱 Tuyệt vời! Bạn có 1 ngày không phát sinh chi tiêu.");
+    }
+
+    // --- RENDER LOGIC ---
+    function renderAll() {
+      document.getElementById('top-streak').innerText = state.streak;
+
+      const totalSpentToday = state.expenses.reduce((s, x) => s + x.amount, 0);
+      const totalSpentMonth = 1450000 + (totalSpentToday - 55000);
+      const budget = state.monthlyBudget || 3000000;
+      const remaining = Math.max(0, budget - totalSpentMonth);
+      const percent = Math.min(100, Math.round((totalSpentMonth / budget) * 100));
+
+      document.getElementById('sum-spent').innerText = formatVND(totalSpentMonth);
+      document.getElementById('sum-remain').innerText = formatVND(remaining);
+      document.getElementById('sum-spent-percent').innerText = `${percent}%`;
+      document.getElementById('overview-progress-bar').style.width = `${percent}%`;
+      document.getElementById('sum-today').innerText = formatVND(totalSpentToday);
+
+      const statusBadge = document.getElementById('overview-status-badge');
+      if (totalSpentToday <= (state.dailyBudget || 65000)) {
+        statusBadge.className = "text-[10px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-md border border-red-200";
+        statusBadge.innerText = "🟢 Trong hạn mức";
+      } else {
+        statusBadge.className = "text-[10px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-md border border-red-200";
+        statusBadge.innerText = "🔴 Vượt hạn mức";
+      }
+
+      // Recent Activity
+      const recentList = document.getElementById('overview-recent-list');
+      recentList.innerHTML = '';
+      state.expenses.slice(0, 4).forEach(item => {
+        recentList.innerHTML += `
+          <div class="px-6 py-3.5 flex items-center justify-between hover:bg-stone-50 transition">
+            <div class="flex items-center space-x-3.5">
+              <span class="w-8 h-8 rounded-xl bg-stone-100 flex items-center justify-center text-sm shadow-2xs">${getCatIcon(item.cat)}</span>
+              <div>
+                <p class="font-bold text-stone-800">${item.note}</p>
+                <p class="text-[11px] text-stone-400">${item.date} • ${item.time}</p>
+              </div>
+            </div>
+            <span class="font-black text-stone-900">-${formatVND(item.amount)}</span>
+          </div>
+        `;
+      });
+
+      // Full Ledger Table
+      const tableBody = document.getElementById('ledger-table-body');
+      tableBody.innerHTML = '';
+      state.expenses.forEach(item => {
+        const mobText = item.mobility ? item.mobility.mode : '—';
+        tableBody.innerHTML += `
+          <tr class="hover:bg-stone-50/80 transition">
+            <td class="py-3.5 px-6 text-stone-400 font-medium">${item.date} <span class="text-[11px]">${item.time}</span></td>
+            <td class="py-3.5 px-6 font-bold text-stone-900">${item.note}</td>
+            <td class="py-3.5 px-6">
+              <span class="bg-red-50 text-red-700 border border-red-100 px-2.5 py-0.5 rounded-lg font-bold">${getCatName(item.cat)}</span>
+            </td>
+            <td class="py-3.5 px-6 text-stone-500">${mobText}</td>
+            <td class="py-3.5 px-6 text-right font-black text-stone-900">-${formatVND(item.amount)}</td>
+          </tr>
+        `;
+      });
+    }
+
+    // Helper functions
+    function formatVND(num) {
+      return num.toLocaleString('vi-VN') + ' đ';
+    }
+
+    function getCatIcon(cat) {
+      const map = { food: '🍜', transport: '🚗', study: '📚', shopping: '🛍', entertain: '🎮', other: '📦' };
+      return map[cat] || '💰';
+    }
+
+    function getCatName(cat) {
+      const map = { food: 'Ăn uống', transport: 'Di chuyển', study: 'Học tập', shopping: 'Mua sắm', entertain: 'Giải trí', other: 'Khác' };
+      return map[cat] || 'Khác';
+    }
+  </script>
+</body>
+</html># daily.spending.companion
