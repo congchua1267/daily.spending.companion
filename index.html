@@ -661,8 +661,9 @@
   </div>
 
   <!-- ================= MODAL 2: AUTH DIALOG ================= -->
-  <div id="modal-auth" class="fixed inset-0 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-stone-100 space-y-4">
+<div id="modal-auth"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">    
+  <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-stone-100 space-y-4">
       <div class="flex justify-between items-start">
         <div>
           <h3 id="auth-modal-title" class="text-lg font-black text-stone-900">Đăng nhập tài khoản</h3>
@@ -865,11 +866,15 @@ let state = window.state;
 window.renderAuthHeader = renderAuthHeader;
 
     function openAuthModal() {
-      document.getElementById('modal-auth').classList.remove('hidden');
-    }
+      const modal = document.getElementById('modal-auth');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
 
     function closeAuthModal() {
-      document.getElementById('modal-auth').classList.add('hidden');
+      const modal = document.getElementById('modal-auth');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
     }
 window.closeAuthModal = closeAuthModal;
 
