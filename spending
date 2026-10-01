@@ -698,8 +698,90 @@
         </button>
       </div>
     </div>
-  </div>
+<div class="flex items-center gap-3">
+  <div class="h-px bg-stone-200 flex-1"></div>
+  <span class="text-[10px] text-stone-400 font-semibold">HOẶC</span>
+  <div class="h-px bg-stone-200 flex-1"></div>
+</div>
 
+<button
+  type="button"
+  onclick="handleGoogleLogin()"
+  class="w-full py-3 bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 font-bold rounded-xl text-xs transition flex items-center justify-center gap-2"
+>
+  <i class="fa-brands fa-google"></i>
+  Tiếp tục với Google
+</button>
+  </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB3pJijUx9Cz4toVGUlcPg6Zic_QGar1Rc",
+    authDomain: "daily-spending-companion.firebaseapp.com",
+    projectId: "daily-spending-companion",
+    storageBucket: "daily-spending-companion.firebasestorage.app",
+    messagingSenderId: "496561473066",
+    appId: "1:496561473066:web:7d0339be1b705733ffa553"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  // Cho code JavaScript phía dưới sử dụng Firebase
+  window.firebaseAuth = auth;
+
+  window.handleGoogleLogin = async function () {
+    try {
+      await signInWithPopup(auth, provider);
+      closeAuthModal();
+    } catch (error) {
+      console.error("Google login error:", error);
+
+      if (error.code === "auth/popup-closed-by-user") {
+        return;
+      }
+
+      alert("Không thể đăng nhập Google. Vui lòng thử lại.");
+    }
+  };
+
+  window.firebaseLogout = async function () {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Không thể đăng xuất. Vui lòng thử lại.");
+    }
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      window.state.user = {
+        uid: user.uid,
+        name: user.displayName || "Người dùng",
+        email: user.email,
+        photoURL: user.photoURL,
+        loggedIn: true
+      };
+    } else {
+      window.state.user = {
+        loggedIn: false
+      };
+    }
+
+    window.renderAuthHeader();
+  });
+</script>
   <!-- JAVASCRIPT STATE ENGINE -->
   <script>
     const INITIAL_STATE = {
@@ -714,7 +796,11 @@
       ]
     };
 
-    let state = JSON.parse(localStorage.getItem('dsc_app_state_scarlet_red')) || INITIAL_STATE;
+window.state =
+  JSON.parse(localStorage.getItem('dsc_app_state_scarlet_red')) ||
+  INITIAL_STATE;
+
+let state = window.state;
     let selectedCat = 'food';
     let isRegisterMode = false;
     let recognition = null;
@@ -771,6 +857,7 @@
         `;
       }
     }
+window.renderAuthHeader = renderAuthHeader;
 
     function openAuthModal() {
       document.getElementById('modal-auth').classList.remove('hidden');
@@ -779,6 +866,7 @@
     function closeAuthModal() {
       document.getElementById('modal-auth').classList.add('hidden');
     }
+window.closeAuthModal = closeAuthModal;
 
     function toggleAuthMode() {
       isRegisterMode = !isRegisterMode;
@@ -812,12 +900,14 @@
       alert(`Chào mừng ${name}! Bạn đã đăng nhập thành công.`);
     }
 
-    function handleLogout() {
-      state.user = { loggedIn: false };
-      saveState();
-      renderAuthHeader();
-      alert("Đã đăng xuất tài khoản.");
-    }
+    async function handleLogout() {
+  if (window.firebaseLogout) {
+    await window.firebaseLogout();
+  }
+
+  state.user = { loggedIn: false };
+  renderAuthHeader();
+}
 
     // --- VOICE RECOGNITION & NLP ---
     function setupSpeechRecognition() {
